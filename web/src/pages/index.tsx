@@ -2,7 +2,14 @@ import { useEffect, useState } from "react";
 import { SearchOutlined } from "@ant-design/icons";
 import { Flex, Layout, Input, Table } from "antd";
 
+import json_reviews from "../assets/reviews.json";
 import json_features from "../assets/features.json";
+
+interface Review {
+	review_id: string;
+	text: string;
+	rating: number;
+}
 
 interface Feature {
 	key: number;
@@ -11,7 +18,12 @@ interface Feature {
 	review_id: string;
 }
 
-const columns = [
+interface FeatureWithReview extends Feature {
+	review: Review;
+	rating: number;
+}
+
+const featureColumns = [
 	{
 		title: "Feature",
 		dataIndex: "feature",
@@ -29,6 +41,13 @@ const App = () => {
 	const [search, setSearch] = useState("");
 
 	useEffect(() => {
+		// Concat features with reviews
+		json_features.forEach((feature: Feature) => {
+			const review = json_reviews.find(
+				(review: Review) => review.review_id === feature.review_id
+			) as Review;
+			feature.place_id = review.review_id;
+		});
 		setFeatures(json_features);
 	}, []);
 
@@ -59,7 +78,7 @@ const App = () => {
 			<Layout style={{ width: "100%" }}>
 				<Table
 					dataSource={features}
-					columns={columns}
+					columns={featureColumns}
 					pagination={{ pageSize: 50 }}
 				/>
 			</Layout>
