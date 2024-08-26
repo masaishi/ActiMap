@@ -37,7 +37,7 @@ const featureColumns = [
 ];
 
 const App = () => {
-	const [features, setFeatures] = useState<Feature[]>([]);
+	const [features, setFeatures] = useState<FeatureWithReview[]>([]);
 	const [search, setSearch] = useState("");
 
 	useEffect(() => {
@@ -46,8 +46,9 @@ const App = () => {
 			const review = json_reviews.find(
 				(review: Review) => review.review_id === feature.review_id
 			) as Review;
-			feature.place_id = review.review_id;
-		});
+			feature.review = review;
+			feature.rating = review.rating;
+		}
 		setFeatures(json_features);
 	}, []);
 
